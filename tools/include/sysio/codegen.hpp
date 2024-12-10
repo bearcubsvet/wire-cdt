@@ -88,7 +88,7 @@ namespace sysio { namespace cdt {
          codegen& cg = codegen::get();
          FileID    main_fid;
          StringRef main_name;
-         Rewriter  rewriter;
+         std::stringstream ss;
          CompilerInstance* ci;
          bool apply_was_found = false;
 
@@ -107,7 +107,6 @@ namespace sysio { namespace cdt {
                : generation_utils(), ci(CI) {
             cg.ast_context = &(CI->getASTContext());
             cg.codegen_ci = CI;
-            rewriter.setSourceMgr(CI->getASTContext().getSourceManager(), CI->getASTContext().getLangOpts());
             get_error_emitter().set_compiler_instance(CI);
          }
 
@@ -119,9 +118,7 @@ namespace sysio { namespace cdt {
             main_name = mn;
          }
 
-         Rewriter& get_rewriter() {
-            return rewriter;
-         }
+         auto& get_ss() { return ss; }
 
          bool is_datastream(const QualType& qt) {
             auto str_name = qt.getAsString();
@@ -151,7 +148,6 @@ namespace sysio { namespace cdt {
          template <typename F>
          void create_dispatch(const std::string& attr, const std::string& func_name, F&& get_str, CXXMethodDecl* decl) {
             constexpr static uint32_t max_stack_size = 512;
-            std::stringstream ss;
             codegen& cg = codegen::get();
             std::string nm = decl->getNameAsString()+"_"+decl->getParent()->getNameAsString();
             if (cg.is_sysio_contract(decl, cg.contract_name)) {
@@ -212,7 +208,6 @@ namespace sysio { namespace cdt {
                }
                ss << "}}\n";
 
-               rewriter.InsertTextAfter(ci->getSourceManager().getLocForEndOfFile(main_fid), ss.str());
             }
          }
 
@@ -230,7 +225,7 @@ namespace sysio { namespace cdt {
             std::string name = decl->getNameAsString();
             static std::set<std::string> _action_set; //used for validations
             static std::set<std::string> _notify_set; //used for validations
-            if (decl->isSysioAction()) {
+            if (decl->isEosioAction()) {
                name = generation_utils::get_action_name(decl);
                validate_name(name, [&](auto s) {
                   CDT_ERROR("codegen_error", decl->getLocation(), std::string("action name (")+s+") is not a valid sysio name");
@@ -248,11 +243,11 @@ namespace sysio { namespace cdt {
                }
                cg.actions.insert(full_action_name); // insert the method action, so we don't create the dispatcher twice
 
-               if (decl->isSysioReadOnly()) {
+               if (decl->isEosioReadOnly()) {
                   read_only_actions.insert(decl);
                }
             }
-            else if (decl->isSysioNotify()) {
+            else if (decl->isEosioNotify()) {
                name = generation_utils::get_notify_pair(decl);
                auto first = name.substr(0, name.find("::"));
                if (first != "*")
@@ -409,7 +404,7 @@ namespace sysio { namespace cdt {
          }
 
          virtual bool VisitCXXRecordDecl(CXXRecordDecl* decl) {
-            if (decl->isSysioContract()) {
+            if (decl->isEosioContract()) {
                auto process_data_member = [this]( CXXRecordDecl* rd ) {
                   for (auto it = rd->decls_begin(); it != rd->decls_end(); ++it) {
                      if (auto* f = dyn_cast<FieldDecl>(*it) ) {
@@ -474,16 +469,15 @@ namespace sysio { namespace cdt {
                   return;
                }
 
-               int fd;
                llvm::SmallString<128> fn;
                try {
-                  SmallString<64> res;
-                  llvm::sys::path::system_temp_directory(true, res);
+                  llvm::sys::fs::createTemporaryFile("antelope", ".cpp", fn);
 
-                  std::ofstream out(std::string(res.c_str())+"/"+llvm::sys::path::filename(main_fe->getName()).str());
-                  for (auto inc : global_includes[main_file]) {
-                     visitor->get_rewriter().ReplaceText(inc.range,
-                           std::string("\"")+inc.file_name+"\"\n");
+                  std::ofstream out(fn.c_str());
+                  {
+                     llvm::SmallString<64> abs_file_path(main_fe->getName());
+                     llvm::sys::fs::make_absolute(abs_file_path);
+                     out << "#include \"" << abs_file_path.c_str() << "\"\n";
                   }
                   const auto& quoted = [](const std::string& s) {
                      std::stringstream ss;
@@ -496,7 +490,7 @@ namespace sysio { namespace cdt {
                   };
 
                   // generate apply stub with abi
-                  std::stringstream ss;
+                  std::stringstream& ss = visitor->get_ss();
                   ss << "\n";
                   ss << "extern \"C\" {\n";
                   ss << "__attribute__((sysio_wasm_import))\n";
@@ -508,9 +502,8 @@ namespace sysio { namespace cdt {
                   ss << "sysio_assert_code(false, 1);";
                   ss << "}\n";
                   ss << "}";
-                  visitor->get_rewriter().InsertTextAfter(ci->getSourceManager().getLocForEndOfFile(fid), ss.str());
-                  auto& RewriteBuf = visitor->get_rewriter().getEditBuffer(fid);
-                  out << std::string(RewriteBuf.begin(), RewriteBuf.end());
+
+                  out << ss.rdbuf();
                   cg.tmp_files.emplace(main_file, fn.str());
                   out.close();
                } catch (...) {

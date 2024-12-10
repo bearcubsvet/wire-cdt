@@ -450,6 +450,6 @@ namespace sysio {
       symbol sym; ///< the symbol
       name   contract; ///< the token contract hosting the symbol
 
-      SYSLIB_SERIALIZE( extended_symbol, (sym)(contract) )
+      EOSLIB_SERIALIZE( extended_symbol, (sym)(contract) )
    };
 }

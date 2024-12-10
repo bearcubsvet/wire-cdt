@@ -1,12 +1,12 @@
-/* Verify the support of nested containers in sysio multi-index table
- * For each action, an example regarding how to use the action with the clio command line is given.
+/* Verify the support of nested containers in eosio multi-index table
+ * For each action, an example regarding how to use the action with the cleos command line is given.
  *
  * std:pair<T1,T2> is a struct with 2 fields first and second,
- * std::map<K,V> is handled as an array/vector of pairs/structs by SYSIO with implicit fields key, value,
- * the cases of combined use of key/value and first/second involving map,pair in the clio are documented here.
+ * std::map<K,V> is handled as an array/vector of pairs/structs by EOSIO with implicit fields key, value,
+ * the cases of combined use of key/value and first/second involving map,pair in the cleos are documented here.
  * so handling of std::pair is NOT the same as the handling of a general struct such as struct mystruct!
  *
- * When assigning data input with clio:
+ * When assigning data input with cleos:
  *      [] represents an empty vector<T>/set<T> or empty map<T1,T2> where T, T1, T2 can be any composite types
  *      null represents an uninitialized std::optional<T> where T can be any composite type
  *      BUT [] or null can NOT be used to represent an empty struct or empty std::pair

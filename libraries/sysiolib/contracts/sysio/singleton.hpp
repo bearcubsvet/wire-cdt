@@ -41,7 +41,7 @@ namespace  sysio {
           */
          uint64_t primary_key() const { return pk_value; }
 
-         SYSLIB_SERIALIZE( row, (value) )
+         EOSLIB_SERIALIZE( row, (value) )
       };
 
       typedef sysio::multi_index<SingletonName, row> table;

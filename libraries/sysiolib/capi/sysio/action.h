@@ -15,7 +15,7 @@ extern "C" {
  * @brief Defines API for querying action and sending action
  *
  *
- * A SYS.IO action has the following abstract structure:
+ * A EOS.IO action has the following abstract structure:
  *
  * ```
  *   struct action {
@@ -167,6 +167,16 @@ uint64_t  publication_time( void );
  */
 __attribute__((sysio_wasm_import))
 capi_name current_receiver( void );
+
+/**
+ *  Get the hash of the code currently published on the given account
+ *  @param account Name of the account to hash the code of
+ *  @param struct_version Version specifying the desired format of the returned struct
+ *  @param result_buffer Buffer wherein the result should be written
+ *  @param buffer_size Size in bytes of result_buffer
+ */
+ __attribute__((sysio_wasm_import))
+ uint32_t get_code_hash( uint64_t account, uint32_t struct_version, char* result_buffer, size_t buffer_size );
 
 /**
  * Set the action return value which will be included in the action_receipt

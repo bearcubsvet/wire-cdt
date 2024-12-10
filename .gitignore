@@ -35,7 +35,7 @@
 .DS_Store
 
 # Build
-build/*
+[Bb]uild*/
 cmake-build-debug/
 examples/multi_index_example/build
 examples/hello/build
@@ -52,3 +52,4 @@ __pycache__/
 
 
 tmp/
+CMakeLists.txt.user

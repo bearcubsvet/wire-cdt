@@ -1,10 +1,10 @@
 cmake_minimum_required( VERSION 3.5 )
 
 set(SYSIO_VERSION_MIN "3.1")
-set(SYSIO_VERSION_SOFT_MAX "3.1")
+set(SYSIO_VERSION_SOFT_MAX "5.0")
 #set(SYSIO_VERSION_HARD_MAX "")
 
-find_package(wire_sysio)
+find_package(leap)
 
 find_path(GMP_INCLUDE_DIR NAMES gmp.h)
 find_library(GMP_LIBRARY gmp)

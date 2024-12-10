@@ -13,9 +13,9 @@ endif()
 
 project(cdt)
 
-set(VERSION_MAJOR 3)
-set(VERSION_MINOR 1)
-set(VERSION_PATCH 0)
+set(VERSION_MAJOR 4)
+set(VERSION_MINOR 0)
+set(VERSION_PATCH 1)
 set(VERSION_SUFFIX "")
 
 if (VERSION_SUFFIX)
@@ -30,6 +30,10 @@ option(ENABLE_NATIVE_COMPILER "enable native builds with the CDT toolchain" ON)
 option(ENABLE_TESTS "enable building tests" ON)
 
 include(GNUInstallDirs)
+
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE "Release")
+endif()
 
 if(NOT TOOLS_BUILD_TYPE)
    set(TOOLS_BUILD_TYPE "Release")

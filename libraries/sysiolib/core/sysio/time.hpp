@@ -39,7 +39,7 @@ namespace sysio {
 
         int64_t _count;
         /// @endcond
-        SYSLIB_SERIALIZE( microseconds, (_count) )
+        EOSLIB_SERIALIZE( microseconds, (_count) )
     private:
         friend class time_point;
   };
@@ -95,7 +95,7 @@ namespace sysio {
         microseconds elapsed;
         /// @endcond
 
-        SYSLIB_SERIALIZE( time_point, (elapsed) )
+        EOSLIB_SERIALIZE( time_point, (elapsed) )
   };
 
   /**
@@ -159,7 +159,7 @@ namespace sysio {
 
         /// @endcond
 
-        SYSLIB_SERIALIZE( time_point_sec, (utc_seconds) )
+        EOSLIB_SERIALIZE( time_point_sec, (utc_seconds) )
   };
 
    /**
@@ -226,7 +226,7 @@ namespace sysio {
          static constexpr int64_t block_timestamp_epoch = 946684800000ll;  // epoch is year 2000
          /// @endcond
 
-         SYSLIB_SERIALIZE( block_timestamp, (slot) )
+         EOSLIB_SERIALIZE( block_timestamp, (slot) )
       private:
 
 
