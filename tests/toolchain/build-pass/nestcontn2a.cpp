@@ -1,4 +1,4 @@
-/* Verify the support of nested containers in eosio multi-index table
+/* Verify the support of nested containers in sysio multi-index table
  * For each action, an example regarding how to use the action with the cleos command line is given.
  *
  * std:pair<T1,T2> is a struct with 2 fields first and second,

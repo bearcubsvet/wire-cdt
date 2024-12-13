@@ -1,4 +1,4 @@
-/* Verify the support of nested containers involving std::tuple<Ts...> in eosio multi-index table
+/* Verify the support of nested containers involving std::tuple<Ts...> in sysio multi-index table
  * This tupletest.cpp can be  regarded as a continuation of ../nestcontn2a.cpp
  * For each action, an example regarding how to use the action with the cleos command line is given.
  *

@@ -66,7 +66,7 @@ namespace sysio { namespace cdt {
 
       void add_action( const clang::CXXRecordDecl* decl ) {
          abi_action ret;
-         auto action_name = decl->getEosioActionAttr()->getName();
+         auto action_name = decl->getSysioActionAttr()->getName();
 
          if (!checked_actions.insert(get_action_name(decl)).second)
             CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
@@ -93,7 +93,7 @@ namespace sysio { namespace cdt {
       void add_action( const clang::CXXMethodDecl* decl ) {
          abi_action ret;
 
-         auto action_name = decl->getEosioActionAttr()->getName();
+         auto action_name = decl->getSysioActionAttr()->getName();
 
          if (!checked_actions.insert(get_action_name(decl)).second)
             CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
@@ -232,7 +232,7 @@ namespace sysio { namespace cdt {
          tables.insert(decl);
          abi_table t;
          t.type = decl->getNameAsString();
-         auto table_name = decl->getEosioTableAttr()->getName();
+         auto table_name = decl->getSysioTableAttr()->getName();
          if (!table_name.empty()) {
             validate_name( table_name.str(), [&](auto s) { CDT_ERROR("abigen_error", decl->getLocation(), s); } );
             t.name = table_name.str();
@@ -771,7 +771,7 @@ namespace sysio { namespace cdt {
                has_added_clauses = true;
             }
 
-            if (decl->isEosioAction() && ag.is_sysio_contract(decl, ag.get_contract_name())) {
+            if (decl->isSysioAction() && ag.is_sysio_contract(decl, ag.get_contract_name())) {
                ag.add_struct(decl);
                ag.add_action(decl);
                for (auto param : decl->parameters()) {
@@ -786,11 +786,11 @@ namespace sysio { namespace cdt {
                ag.add_contracts(ag.parse_contracts());
                has_added_clauses = true;
             }
-            if ((decl->isEosioAction() || decl->isEosioTable()) && ag.is_sysio_contract(decl, ag.get_contract_name())) {
+            if ((decl->isSysioAction() || decl->isSysioTable()) && ag.is_sysio_contract(decl, ag.get_contract_name())) {
                ag.add_struct(decl);
-               if (decl->isEosioAction())
+               if (decl->isSysioAction())
                   ag.add_action(decl);
-               if (decl->isEosioTable())
+               if (decl->isSysioTable())
                   ag.add_table(decl);
                for (auto field : decl->fields()) {
                   ag.add_type( field->getType() );
@@ -838,10 +838,10 @@ namespace sysio { namespace cdt {
                if (d->getName() == "multi_index" || d->getName() == "singleton") {
                   // second template parameter is table type
                   const auto* table_type = d->getTemplateArgs()[1].getAsType().getTypePtr()->getAsCXXRecordDecl();
-                  if ((table_type->isEosioTable() && ag.is_sysio_contract(table_type, ag.get_contract_name())) || defined_in_contract(d)) {
+                  if ((table_type->isSysioTable() && ag.is_sysio_contract(table_type, ag.get_contract_name())) || defined_in_contract(d)) {
                      // first parameter is table name
                      ag.add_table(d->getTemplateArgs()[0].getAsIntegral().getExtValue(), table_type);
-                     if (table_type->isEosioTable())
+                     if (table_type->isSysioTable())
                         ag.add_struct(table_type);
                   }
                }
@@ -858,7 +858,7 @@ namespace sysio { namespace cdt {
       const clang::CXXRecordDecl* contract_class = nullptr;
    public:
       virtual bool VisitCXXRecordDecl(clang::CXXRecordDecl* cxx_decl) {
-         if (cxx_decl->isEosioContract()) {
+         if (cxx_decl->isSysioContract()) {
             bool is_sysio_contract = false;
             // on this point it could be just an attribute so let's check base classes
             for (const auto& base : cxx_decl->bases()) {
@@ -874,7 +874,7 @@ namespace sysio { namespace cdt {
             if (!is_sysio_contract)
                return true;
             
-            auto attr_name = cxx_decl->getEosioContractAttr()->getName();
+            auto attr_name = cxx_decl->getSysioContractAttr()->getName();
             auto name = attr_name.empty() ? cxx_decl->getName() : attr_name;
             if (name == llvm::StringRef(ag.get_contract_name())) {
                contract_class = cxx_decl;

@@ -364,7 +364,16 @@ SYSIO_TEST_BEGIN(extended_asset_type_test)
    static constexpr extended_symbol ext_sym_no_prec{sym_no_prec, name{"sysioaccountj"}};
    static constexpr extended_symbol ext_sym_prec{sym_prec, name{"sysioaccountj"}};
 
-   static const asset asset_no_prec{0LL, sym_no_prec};
+   // Assets with sym_no_prec
+   static const auto a0 = asset{ 0LL, sym_no_prec}; // AKA asset_no_prec
+   static const auto a1 = asset{ 1LL, sym_no_prec};
+   static const auto a2 = asset{ 2LL, sym_no_prec};
+   static const auto a4 = asset{ 4LL, sym_no_prec};
+   static const auto aneg1 = asset{ -1LL, sym_no_prec};
+   static const auto aneg2 = asset{ -2LL, sym_no_prec};
+   static const auto aneg4 = asset{ -4LL, sym_no_prec};
+
+   // Assets with sym_prec
    static const asset asset_prec{0LL, sym_prec};
 
    //// extended_asset()
