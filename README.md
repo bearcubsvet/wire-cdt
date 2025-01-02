@@ -180,7 +180,7 @@ sudo apt remove cdt
 <!-- markdownlint-disable MD033 -->
 <table>
   <tr>
-    <td><img src="https://wire.foundation/favicon.ico" alt="Wire Network" width="50"/></td>
+    <td><img src="./favicon.png" alt="Wire Network" width="50"/></td>
     <td>
       <strong>Wire Network</strong><br>
       <a href="https://www.wire.network/">Website</a> |
