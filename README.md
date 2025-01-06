@@ -56,10 +56,10 @@ First, ensure that Wire Sysio has been built from source (see [README](https://g
 Then, execute the following command in the same terminal session that you will use to build CDT:
 
 ```sh
-export wire_sysio_DIR=/path/to/wire-sysio/build/lib/cmake/wire-sysio
+export sysio_DIR=/path/to/wire-sysio/build/lib/cmake/sysio
 ```
 
-Now you can continue with the steps to build CDT as described. When you run `cmake` make sure that it does not report `wire-sysio package not found`. If it does, this means CDT was not able to find a build of Wire Sysio at the specified path in `wire_sysio_DIR` and will therefore continue without building the integration tests.
+Now you can continue with the steps to build CDT as described. When you run `cmake` make sure that it does not report `wire-sysio package not found`. If it does, this means CDT was not able to find a build of Wire Sysio at the specified path in `sysio_DIR` and will therefore continue without building the integration tests.
 
 ### ccache
 
