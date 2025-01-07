@@ -94,6 +94,20 @@ Alternatively, you can use CMake toolchain file located in `build/lib/cmake/CDTW
 
 If you would prefer to install CDT globally, see the section [Install CDT](#install-cdt) below.
 
+#### Build CDT in Debug mode
+
+To build CDT in debug mode (with debug symbols) you need to add the following flags to cmake command:
+
+```sh
+cmake -DCMAKE_BUILD_TYPE="Debug" -DTOOLS_BUILD_TYPE="Debug" -DLIBS_BUILD_TYPE="Debug" ..
+```
+
+### Generate the `.deb`
+
+```sh
+cd build/packages && bash ./generate_package.sh deb ubuntu-22.04 amd64
+```
+
 ### Run tests
 
 #### Run unit tests
